@@ -1,0 +1,3 @@
+C:/Users/yesca/Desktop/pj/build/CMakeFiles/DenPaKid.dir
+C:/Users/yesca/Desktop/pj/build/CMakeFiles/edit_cache.dir
+C:/Users/yesca/Desktop/pj/build/CMakeFiles/rebuild_cache.dir

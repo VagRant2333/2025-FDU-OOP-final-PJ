@@ -1,0 +1,130 @@
+// src/scene/GameScene.h
+#ifndef GAMESCENE_H
+#define GAMESCENE_H
+
+#include "Scene.h"
+#include "../core/Game.h"
+#include "../entities/Player.h"
+#include "../physics/PhysicsEngine.h"
+#include "../render/ResourceManager.h"
+#include <SFML/Audio.hpp>
+#include <vector>
+#include <random> // For random field/laser generation
+
+// Forward declare simple entity types for this scene
+struct Laser {
+    sf::RectangleShape shape;
+    sf::Vector2f velocity;
+    bool isActive = true;
+
+    Laser(sf::Vector2f pos, sf::Vector2f size, sf::Color color, sf::Vector2f vel)
+        : velocity(vel) {
+        shape.setPosition(pos);
+        shape.setSize(size);
+        shape.setFillColor(color);
+    }
+
+    void update(sf::Time dt) {
+        shape.move(velocity * dt.asSeconds());
+    }
+    sf::FloatRect getBounds() const { return shape.getGlobalBounds(); }
+};
+
+struct ScrollItem {
+    sf::Sprite sprite;
+    int id;
+    bool isActive = true;
+    sf::Texture* texturePtr; // Keep a pointer to avoid copying texture
+
+    ScrollItem(int scrollId, sf::Texture& tex, sf::Vector2f pos) : id(scrollId) {
+        texturePtr = &tex;
+        sprite.setTexture(*texturePtr);
+        sprite.setOrigin(tex.getSize().x / 2.f, tex.getSize().y / 2.f);
+        sprite.setPosition(pos);
+        // ASSET_PATH: Example "scroll_item.png" for in-game scroll
+        // sprite.setScale(0.2f, 0.2f); // Example scale
+    }
+     sf::FloatRect getBounds() const { return sprite.getGlobalBounds(); }
+};
+
+
+class GameScene : public Scene {
+public:
+    explicit GameScene(Game& game);
+    ~GameScene() override;
+
+    void loadAssets() override;
+    void handleInput(sf::Event& event, sf::RenderWindow& window) override;
+    void update(sf::Time deltaTime) override;
+    void render(sf::RenderWindow& window) override;
+    void onVolumeChanged() override;
+    sf::Music* getMusic() override { return &m_gameMusic; }
+
+
+private:
+    void setupInitialState();
+    void updateHUD();
+    void spawnLaser();
+    void spawnScroll();
+    void updateLasers(sf::Time deltaTime);
+    void updateScrolls(sf::Time deltaTime);
+    void updateBackground(sf::Time deltaTime);
+    void updateFieldVisuals();
+    void randomizeFields();
+
+
+    sf::Sprite m_backgroundSprite1;
+    sf::Sprite m_backgroundSprite2; // For seamless scrolling
+    float m_bgScrollSpeed = 100.f; // Pixels per second
+    sf::Texture m_gameBgTexture; // Hold the texture
+
+    // Player m_player;
+    std::unique_ptr<Player> m_player;
+    PhysicsEngine m_physicsEngine;
+    FieldProperties m_currentFields;
+
+    sf::Music m_gameMusic;
+    sf::Sound m_laserSound; // Sound for when lasers appear or fire
+
+    // HUD Elements
+    sf::Font m_hudFont;
+    sf::Text m_distanceText;
+    sf::Text m_chargeText;
+    float m_distanceTraveled = 0.f;
+
+    // Game Elements
+    // sf::RectangleShape m_bottomLaser;
+    std::vector<Laser> m_lasers;
+    std::vector<ScrollItem> m_scrollsInScene;
+    
+    // Timers for spawning
+    sf::Time m_laserSpawnTimer;
+    sf::Time m_timeBetweenLaserSpawns = sf::seconds(2.f); // Randomize this later
+    sf::Time m_scrollSpawnTimer;
+    sf::Time m_timeBetweenScrollSpawns = sf::seconds(10.f); // Scrolls are rarer
+    int m_maxScrollsOnScreen = 1;
+
+
+    // Field Visuals
+    sf::Text m_eFieldPositiveText;
+    sf::Text m_eFieldNegativeText;
+    // std::vector<sf::CircleShape> m_bFieldSymbols; // Dots for out, could use custom sprites for crosses
+    std::vector<sf::Text> m_bFieldSymbols;
+    std::vector<sf::VertexArray> m_eFieldLines; // Arrows
+
+    // Randomness
+    std::mt19937 m_rng; // Random number generator
+    
+    bool m_isGameOver = false;
+
+    // constant for B field
+    static constexpr float B_FIELD_DENSITY_SCALE_FACTOR = 10.0f;
+    static constexpr int MAX_B_FIELD_SYMBOLS_PER_ROW_COL = 15;
+
+    // const float CHARGE_CONTROL_AMOUNT = 0.5f; // Amount to inc/dec charge by
+    sf::Texture m_playerTexture; // Store player texture
+    sf::Texture m_scrollItemTexture; // Store scroll item texture
+    sf::Texture m_laserTexture; // Store laser texture (optional, can use shapes)
+};
+
+#endif // GAMESCENE_H

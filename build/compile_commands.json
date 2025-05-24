@@ -1,0 +1,50 @@
+[
+{
+  "directory": "C:/Users/yesca/Desktop/pj/build",
+  "command": "D:\\mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/DenPaKid.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\DenPaKid.dir\\src\\main.cpp.obj -c C:\\Users\\yesca\\Desktop\\pj\\src\\main.cpp",
+  "file": "C:/Users/yesca/Desktop/pj/src/main.cpp",
+  "output": "CMakeFiles/DenPaKid.dir/src/main.cpp.obj"
+},
+{
+  "directory": "C:/Users/yesca/Desktop/pj/build",
+  "command": "D:\\mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/DenPaKid.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\DenPaKid.dir\\src\\core\\Game.cpp.obj -c C:\\Users\\yesca\\Desktop\\pj\\src\\core\\Game.cpp",
+  "file": "C:/Users/yesca/Desktop/pj/src/core/Game.cpp",
+  "output": "CMakeFiles/DenPaKid.dir/src/core/Game.cpp.obj"
+},
+{
+  "directory": "C:/Users/yesca/Desktop/pj/build",
+  "command": "D:\\mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/DenPaKid.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\DenPaKid.dir\\src\\entities\\Entity.cpp.obj -c C:\\Users\\yesca\\Desktop\\pj\\src\\entities\\Entity.cpp",
+  "file": "C:/Users/yesca/Desktop/pj/src/entities/Entity.cpp",
+  "output": "CMakeFiles/DenPaKid.dir/src/entities/Entity.cpp.obj"
+},
+{
+  "directory": "C:/Users/yesca/Desktop/pj/build",
+  "command": "D:\\mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/DenPaKid.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\DenPaKid.dir\\src\\entities\\Player.cpp.obj -c C:\\Users\\yesca\\Desktop\\pj\\src\\entities\\Player.cpp",
+  "file": "C:/Users/yesca/Desktop/pj/src/entities/Player.cpp",
+  "output": "CMakeFiles/DenPaKid.dir/src/entities/Player.cpp.obj"
+},
+{
+  "directory": "C:/Users/yesca/Desktop/pj/build",
+  "command": "D:\\mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/DenPaKid.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\DenPaKid.dir\\src\\scene\\GameScene.cpp.obj -c C:\\Users\\yesca\\Desktop\\pj\\src\\scene\\GameScene.cpp",
+  "file": "C:/Users/yesca/Desktop/pj/src/scene/GameScene.cpp",
+  "output": "CMakeFiles/DenPaKid.dir/src/scene/GameScene.cpp.obj"
+},
+{
+  "directory": "C:/Users/yesca/Desktop/pj/build",
+  "command": "D:\\mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/DenPaKid.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\DenPaKid.dir\\src\\scene\\MenuScene.cpp.obj -c C:\\Users\\yesca\\Desktop\\pj\\src\\scene\\MenuScene.cpp",
+  "file": "C:/Users/yesca/Desktop/pj/src/scene/MenuScene.cpp",
+  "output": "CMakeFiles/DenPaKid.dir/src/scene/MenuScene.cpp.obj"
+},
+{
+  "directory": "C:/Users/yesca/Desktop/pj/build",
+  "command": "D:\\mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/DenPaKid.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\DenPaKid.dir\\src\\ui\\UIManager.cpp.obj -c C:\\Users\\yesca\\Desktop\\pj\\src\\ui\\UIManager.cpp",
+  "file": "C:/Users/yesca/Desktop/pj/src/ui/UIManager.cpp",
+  "output": "CMakeFiles/DenPaKid.dir/src/ui/UIManager.cpp.obj"
+},
+{
+  "directory": "C:/Users/yesca/Desktop/pj/build",
+  "command": "D:\\mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/DenPaKid.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\DenPaKid.dir\\src\\physics\\PhysicsEngine.cpp.obj -c C:\\Users\\yesca\\Desktop\\pj\\src\\physics\\PhysicsEngine.cpp",
+  "file": "C:/Users/yesca/Desktop/pj/src/physics/PhysicsEngine.cpp",
+  "output": "CMakeFiles/DenPaKid.dir/src/physics/PhysicsEngine.cpp.obj"
+}
+]
