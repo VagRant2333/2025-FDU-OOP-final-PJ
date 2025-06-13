@@ -94,6 +94,7 @@ private:
     sf::Font m_hudFont;
     sf::Text m_distanceText;
     sf::Text m_chargeText;
+    sf::Text m_dashChargesText;
     float m_distanceTraveled = 0.f;
 
     // Game Elements

@@ -73,7 +73,7 @@ private:
     std::vector<std::string> m_scrollContents; // Placeholder for scroll texts
 
     // Game win condition
-    const float m_requiredDistanceForWin = 10000.0f; // Example distance
+    const float m_requiredDistanceForWin = 100.0f; // Example distance
     bool m_gameWonMessageDisplayed = false;
 
     sf::Text m_winText;

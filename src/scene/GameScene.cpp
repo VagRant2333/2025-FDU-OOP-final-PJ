@@ -109,6 +109,7 @@ void GameScene::setupInitialState() {
                                static_cast<float>(m_game.getWindow().getSize().y) / 2.f});
         m_player->setVelocity({100.f, 0.f}); 
         m_player->setCharge(1.0f); 
+        m_player->resetDashCharges();
     }
 
 
@@ -122,6 +123,11 @@ void GameScene::setupInitialState() {
     m_chargeText.setCharacterSize(24);
     m_chargeText.setFillColor(sf::Color::White);
     m_chargeText.setPosition(m_game.getWindow().getSize().x - 250.f, 50.f);
+
+    m_dashChargesText.setFont(m_hudFont);
+    m_dashChargesText.setCharacterSize(24);
+    m_dashChargesText.setFillColor(sf::Color::Cyan);
+    m_dashChargesText.setPosition(m_game.getWindow().getSize().x - 250.f, 80.f);
 
     // Bottom Laser
     // m_bottomLaser.setSize(sf::Vector2f(static_cast<float>(m_game.getWindow().getSize().x), BOTTOM_LASER_HEIGHT));
@@ -164,6 +170,14 @@ void GameScene::handleInput(sf::Event& event, sf::RenderWindow& window) {
             m_player->increaseCharge();
         } else if (event.key.code == sf::Keyboard::Space) {
             m_player->toggleChargeSign();
+        } else if (event.key.code == sf::Keyboard::W) {
+            m_player->dash({0.f, -1.f});
+        } else if (event.key.code == sf::Keyboard::A) {
+            m_player->dash({-1.f, 0.f});
+        } else if (event.key.code == sf::Keyboard::S) {
+            m_player->dash({0.f, 1.f});
+        } else if (event.key.code == sf::Keyboard::D) {
+            m_player->dash({1.f, 0.f});
         }
         // Debug: Randomize fields
         // else if (event.key.code == sf::Keyboard::R) {
@@ -542,6 +556,7 @@ void GameScene::updateScrolls(sf::Time deltaTime) {
 
 
 void GameScene::updateHUD() {
+    if (!m_player) return;
     m_distanceText.setString("Distance: " + std::to_string(static_cast<int>(m_distanceTraveled)));
     
     std::string chargeStr = "Charge: " + std::to_string(m_player->getCharge());
@@ -549,6 +564,8 @@ void GameScene::updateHUD() {
     char buffer[10];
     std::snprintf(buffer, sizeof(buffer), "%.1f", m_player->getCharge());
     m_chargeText.setString("Charge: " + std::string(buffer));
+
+    m_dashChargesText.setString("Dash: " + std::to_string(m_player->getDashCharges()));
 }
 
 void GameScene::render(sf::RenderWindow& window) {
@@ -591,6 +608,7 @@ void GameScene::render(sf::RenderWindow& window) {
     // HUD
     window.draw(m_distanceText);
     window.draw(m_chargeText);
+    window.draw(m_dashChargesText);
 }
 
 void GameScene::onVolumeChanged() {

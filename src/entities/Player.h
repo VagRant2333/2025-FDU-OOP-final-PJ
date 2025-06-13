@@ -26,6 +26,11 @@ public:
     float getCharge() const;
     void setCharge(float charge);
 
+    // skill
+    void dash(const sf::Vector2f& direction);
+    void resetDashCharges();
+    int getDashCharges() const;
+
 
 private:
     sf::Sprite m_sprite;
@@ -35,6 +40,10 @@ private:
     static constexpr float MAX_CHARGE = 10.0f;
     static constexpr float MIN_CHARGE_MAGNITUDE = 0.1f; // Minimum magnitude, can be negative
     static constexpr float CHARGE_STEP = 0.5f;
+
+    int m_dashCharges;
+    static constexpr int MAX_DASH_CHARGES = 5;
+    static constexpr float DASH_DISTANCE = 100.f;
 };
 
 #endif // PLAYER_H
