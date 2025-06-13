@@ -91,6 +91,7 @@ void GameScene::loadAssets() {
 
         // Laser texture (optional, currently using shapes)
         // m_laserTexture = ResourceManager::getInstance().loadTexture("laser_beam", "assets/images/laser.png"); // CREATE THIS
+        m_laserTexture = ResourceManager::getInstance().loadTexture("laser_beam", "../../assets/images/laser.png");
 
     } catch (const std::runtime_error& e) {
         std::cerr << "Error loading assets in GameScene: " << e.what() << std::endl;
@@ -128,17 +129,17 @@ void GameScene::setupInitialState() {
     // m_bottomLaser.setPosition(0, m_game.getWindow().getSize().y - BOTTOM_LASER_HEIGHT);
 
     // Field Visuals Setup (text for E, shapes for B)
-    m_eFieldPositiveText.setFont(m_hudFont);
-    m_eFieldPositiveText.setCharacterSize(20);
-    m_eFieldPositiveText.setFillColor(sf::Color::Red);
-    m_eFieldPositiveText.setString("+ + + E + + +");
+    // m_eFieldPositiveText.setFont(m_hudFont);
+    // m_eFieldPositiveText.setCharacterSize(20);
+    // m_eFieldPositiveText.setFillColor(sf::Color::Red);
+    // m_eFieldPositiveText.setString("+ + + E + + +");
 
-    // TODO
+    // // TODO
 
-    m_eFieldNegativeText.setFont(m_hudFont);
-    m_eFieldNegativeText.setCharacterSize(20);
-    m_eFieldNegativeText.setFillColor(sf::Color::Blue);
-    m_eFieldNegativeText.setString("- - - E - - -");
+    // m_eFieldNegativeText.setFont(m_hudFont);
+    // m_eFieldNegativeText.setCharacterSize(20);
+    // m_eFieldNegativeText.setFillColor(sf::Color::Blue);
+    // m_eFieldNegativeText.setString("- - - E - - -");
     
     // Initial field randomization
     randomizeFields();
@@ -277,20 +278,20 @@ void GameScene::updateFieldVisuals() {
     sf::Vector2u windowSize = m_game.getWindow().getSize();
     
     // E-Field indicators (side texts)
-    std::cout << "GameScene E filed visializing. /GameScene.cpp" << std::endl;
-    if (m_currentFields.electricField.x > 0) { // Points right
-        m_eFieldPositiveText.setPosition(windowSize.x - m_eFieldPositiveText.getLocalBounds().width - PADDING, PADDING * 5);
-        m_eFieldNegativeText.setPosition(PADDING, PADDING * 5);
-    } else if (m_currentFields.electricField.x < 0) { // Points left
-        m_eFieldPositiveText.setPosition(PADDING, PADDING * 5);
-        m_eFieldNegativeText.setPosition(windowSize.x - m_eFieldNegativeText.getLocalBounds().width - PADDING, PADDING * 5);
-    } else { // No horizontal E-field text
-        m_eFieldPositiveText.setString("");
-        m_eFieldNegativeText.setString("");
-    }
-     // Restore string if it was cleared
-    if (m_eFieldPositiveText.getString().isEmpty()) m_eFieldPositiveText.setString("+ + + E + + +");
-    if (m_eFieldNegativeText.getString().isEmpty()) m_eFieldNegativeText.setString("- - - E - - -");
+    // std::cout << "GameScene E filed visializing. /GameScene.cpp" << std::endl;
+    // if (m_currentFields.electricField.x > 0) { // Points right
+    //     m_eFieldPositiveText.setPosition(windowSize.x - m_eFieldPositiveText.getLocalBounds().width - PADDING, PADDING * 5);
+    //     m_eFieldNegativeText.setPosition(PADDING, PADDING * 5);
+    // } else if (m_currentFields.electricField.x < 0) { // Points left
+    //     m_eFieldPositiveText.setPosition(PADDING, PADDING * 5);
+    //     m_eFieldNegativeText.setPosition(windowSize.x - m_eFieldNegativeText.getLocalBounds().width - PADDING, PADDING * 5);
+    // } else { // No horizontal E-field text
+    //     m_eFieldPositiveText.setString("");
+    //     m_eFieldNegativeText.setString("");
+    // }
+    //  // Restore string if it was cleared
+    // if (m_eFieldPositiveText.getString().isEmpty()) m_eFieldPositiveText.setString("+ + + E + + +");
+    // if (m_eFieldNegativeText.getString().isEmpty()) m_eFieldNegativeText.setString("- - - E - - -");
 
 
     // B-Field indicators (dots/crosses)
@@ -405,39 +406,53 @@ void GameScene::spawnLaser() {
     std::cout << "sapwn laser. /GameScene.cpp" << std::endl;
     // ASSET_PATH: laser.png could be used here if m_laserTexture is loaded
     // For now, colored rectangles
+    if (m_laserTexture.getSize().x == 0) return;
     std::uniform_int_distribution<int> side_dist(0, 3); // 0:top, 1:bottom (but we have death laser), 2:left, 3:right
     int side = side_dist(m_rng);
 
     sf::Vector2f laserSize;
     sf::Vector2f laserPos;
     sf::Vector2f laserVel;
-    float laserSpeed = 300.f + (m_rng() % 200); // Random speed
+    float laserSpeed = 150.f + (m_rng() % 200); // Random speed
+    float rotation = 0.f; // laser points to right and is horizontal
 
     sf::Vector2u winSize = m_game.getWindow().getSize();
 
     switch(side) {
         case 0: // From Top
-            laserSize = sf::Vector2f(static_cast<float>(5 + m_rng() % 15), static_cast<float>(50 + m_rng() % 100));
-            laserPos = sf::Vector2f(static_cast<float>(m_rng() % winSize.x), -laserSize.y);
-            laserVel = sf::Vector2f(0, laserSpeed);
+            // laserSize = sf::Vector2f(static_cast<float>(5 + m_rng() % 15), static_cast<float>(50 + m_rng() % 100));
+            // laserPos = sf::Vector2f(static_cast<float>(m_rng() % winSize.x), -laserSize.y);
+            // laserVel = sf::Vector2f(0, laserSpeed);
+            laserPos = {static_cast<float>(m_rng() % winSize.x), -m_laserTexture.getSize().y / 2.f};
+            laserVel = {0, laserSpeed};
+            rotation = 90.f;
             break;
         case 1: // From Bottom
-            laserSize = sf::Vector2f(static_cast<float>(5 + m_rng() % 15), static_cast<float>(50 + m_rng() % 100));
-            laserPos = sf::Vector2f(static_cast<float>(m_rng() % winSize.x), static_cast<float>(winSize.y));
-            laserVel = sf::Vector2f(0, -laserSpeed);
+            // laserSize = sf::Vector2f(static_cast<float>(5 + m_rng() % 15), static_cast<float>(50 + m_rng() % 100));
+            // laserPos = sf::Vector2f(static_cast<float>(m_rng() % winSize.x), static_cast<float>(winSize.y));
+            // laserVel = sf::Vector2f(0, -laserSpeed);
+            laserPos = {static_cast<float>(m_rng() % winSize.x), static_cast<float>(winSize.y) + m_laserTexture.getSize().y / 2.f};
+            laserVel = {0, -laserSpeed};
+            rotation = -90.f;
             break;
         case 2: // From Left
-            laserSize = sf::Vector2f(static_cast<float>(50 + m_rng() % 100), static_cast<float>(5 + m_rng() % 15));
-            laserPos = sf::Vector2f(-laserSize.x, static_cast<float>(m_rng() % winSize.y));
-            laserVel = sf::Vector2f(laserSpeed, 0);
+            // laserSize = sf::Vector2f(static_cast<float>(50 + m_rng() % 100), static_cast<float>(5 + m_rng() % 15));
+            // laserPos = sf::Vector2f(-laserSize.x, static_cast<float>(m_rng() % winSize.y));
+            // laserVel = sf::Vector2f(laserSpeed, 0);
+            laserPos = {-m_laserTexture.getSize().x / 2.f, static_cast<float>(m_rng() % winSize.y)};
+            laserVel = {laserSpeed, 0};
+            rotation = 0.f;
             break;
         case 3: // From Right
-            laserSize = sf::Vector2f(static_cast<float>(50 + m_rng() % 100), static_cast<float>(5 + m_rng() % 15));
-            laserPos = sf::Vector2f(static_cast<float>(winSize.x), static_cast<float>(m_rng() % winSize.y));
-            laserVel = sf::Vector2f(-laserSpeed, 0);
+            // laserSize = sf::Vector2f(static_cast<float>(50 + m_rng() % 100), static_cast<float>(5 + m_rng() % 15));
+            // laserPos = sf::Vector2f(static_cast<float>(winSize.x), static_cast<float>(m_rng() % winSize.y));
+            // laserVel = sf::Vector2f(-laserSpeed, 0);
+            laserPos = {static_cast<float>(winSize.x) + m_laserTexture.getSize().x / 2.f, static_cast<float>(m_rng() % winSize.y)};
+            laserVel = {-laserSpeed, 0};
+            rotation = 180.f; 
             break;
     }
-    m_lasers.emplace_back(laserPos, laserSize, sf::Color::Red, laserVel);
+    m_lasers.emplace_back(m_laserTexture, laserPos, laserVel, rotation);
     m_laserSound.play();
 
     // After spawning a laser, good time to change fields too for more dynamic gameplay
@@ -547,8 +562,8 @@ void GameScene::render(sf::RenderWindow& window) {
     for (const auto& line : m_eFieldLines) {
         window.draw(line);
     }
-    if (!m_eFieldPositiveText.getString().isEmpty()) window.draw(m_eFieldPositiveText);
-    if (!m_eFieldNegativeText.getString().isEmpty()) window.draw(m_eFieldNegativeText);
+    // if (!m_eFieldPositiveText.getString().isEmpty()) window.draw(m_eFieldPositiveText);
+    // if (!m_eFieldNegativeText.getString().isEmpty()) window.draw(m_eFieldNegativeText);
     
     for (const auto& symbol : m_bFieldSymbols) {
         window.draw(symbol);
@@ -568,7 +583,7 @@ void GameScene::render(sf::RenderWindow& window) {
     // Lasers
     for (const auto& laser : m_lasers) {
         if (laser.isActive) {
-            window.draw(laser.shape);
+            window.draw(laser.sprite);
         }
     }
     // window.draw(m_bottomLaser);

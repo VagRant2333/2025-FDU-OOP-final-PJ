@@ -13,21 +13,25 @@
 
 // Forward declare simple entity types for this scene
 struct Laser {
-    sf::RectangleShape shape;
+    // sf::RectangleShape shape;
+    sf::Sprite sprite;
     sf::Vector2f velocity;
     bool isActive = true;
 
-    Laser(sf::Vector2f pos, sf::Vector2f size, sf::Color color, sf::Vector2f vel)
+    Laser(sf::Texture& texture, sf::Vector2f pos, sf::Vector2f vel, float initialRotation = 0.f)
         : velocity(vel) {
-        shape.setPosition(pos);
-        shape.setSize(size);
-        shape.setFillColor(color);
+        sprite.setTexture(texture);
+        sprite.setOrigin(texture.getSize().x / 2.f, texture.getSize().y / 2.f);
+        sprite.setPosition(pos);
+        // shape.setSize(size);
+        // shape.setFillColor(color);
+        sprite.setRotation(initialRotation);
     }
 
     void update(sf::Time dt) {
-        shape.move(velocity * dt.asSeconds());
+        sprite.move(velocity * dt.asSeconds());
     }
-    sf::FloatRect getBounds() const { return shape.getGlobalBounds(); }
+    sf::FloatRect getBounds() const { return sprite.getGlobalBounds(); }
 };
 
 struct ScrollItem {
@@ -106,8 +110,8 @@ private:
 
 
     // Field Visuals
-    sf::Text m_eFieldPositiveText;
-    sf::Text m_eFieldNegativeText;
+    // sf::Text m_eFieldPositiveText;
+    // sf::Text m_eFieldNegativeText;
     // std::vector<sf::CircleShape> m_bFieldSymbols; // Dots for out, could use custom sprites for crosses
     std::vector<sf::Text> m_bFieldSymbols;
     std::vector<sf::VertexArray> m_eFieldLines; // Arrows
