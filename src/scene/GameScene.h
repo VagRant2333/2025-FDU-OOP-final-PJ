@@ -26,6 +26,10 @@ struct Laser {
         // shape.setSize(size);
         // shape.setFillColor(color);
         sprite.setRotation(initialRotation);
+
+        float desiredHeight = 15.f;
+        float scale = desiredHeight / sprite.getLocalBounds().height;
+        sprite.setScale(scale, scale);
     }
 
     void update(sf::Time dt) {
@@ -47,6 +51,10 @@ struct ScrollItem {
         sprite.setPosition(pos);
         // ASSET_PATH: Example "scroll_item.png" for in-game scroll
         // sprite.setScale(0.2f, 0.2f); // Example scale
+
+        float desiredWidth = 48.f;
+        float scale = desiredWidth / sprite.getLocalBounds().width;
+        sprite.setScale(scale,scale);
     }
      sf::FloatRect getBounds() const { return sprite.getGlobalBounds(); }
 };

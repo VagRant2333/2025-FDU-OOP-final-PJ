@@ -3,3 +3,5 @@
 build/
 CMakeFiles/
 CMakeCaChe.txt
+bulid.ninja
+cmake_install.cmake

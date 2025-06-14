@@ -6,7 +6,8 @@
 #include <string>
 #include <functional>
 
-struct Button {
+struct Button
+{
     sf::RectangleShape shape;
     sf::Text text;
     sf::Sprite sprite; // Optional: for image buttons
@@ -14,16 +15,17 @@ struct Button {
 
     std::function<void()> onClick;
 
-    Button(const std::string& label, sf::Font& font, unsigned int charSize,
-           sf::Vector2f position, sf::Vector2f size, 
-           sf::Color bgColor = sf::Color(100, 100, 100), 
-           sf::Color textColor = sf::Color::White) {
-        
+    Button(const std::string &label, sf::Font &font, unsigned int charSize,
+           sf::Vector2f position, sf::Vector2f size,
+           sf::Color bgColor = sf::Color(100, 100, 100),
+           sf::Color textColor = sf::Color::White)
+    {
+
         shape.setPosition(position);
         shape.setSize(size);
         shape.setFillColor(bgColor);
         shape.setOutlineThickness(2.f);
-        shape.setOutlineColor(sf::Color(50,50,50));
+        shape.setOutlineColor(sf::Color(50, 50, 50));
 
         text.setFont(font);
         text.setString(label);
@@ -40,7 +42,8 @@ struct Button {
     }
 
     // Constructor for sprite-based button
-    Button(sf::Texture& texture, sf::Vector2f position, sf::Vector2f scale = {1.f, 1.f}) {
+    Button(sf::Texture &texture, sf::Vector2f position, sf::Vector2f scale = {1.f, 1.f})
+    {
         sprite.setTexture(texture);
         sprite.setPosition(position);
         sprite.setScale(scale);
@@ -51,36 +54,45 @@ struct Button {
         useSprite = true;
     }
 
-
-    void draw(sf::RenderWindow& window) {
-        if (useSprite) {
+    void draw(sf::RenderWindow &window)
+    {
+        if (useSprite)
+        {
             window.draw(sprite);
-        } else {
+        }
+        else
+        {
             window.draw(shape);
             window.draw(text);
         }
     }
 
-    bool isMouseOver(sf::RenderWindow& window) {
+    bool isMouseOver(sf::RenderWindow &window)
+    {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-        if (useSprite) {
+        if (useSprite)
+        {
             return sprite.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos));
         }
         return shape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos));
     }
 
-    void setHoverColors(sf::Color bgHoverColor, sf::Color textHoverColor) {
+    void setHoverColors(sf::Color bgHoverColor, sf::Color textHoverColor)
+    {
         // Store these and apply in an update method if you want visual feedback
         // For simplicity, this example doesn't dynamically change colors on hover in Button struct itself.
         // Scenes can manage this.
     }
 
-    void setOnClickAction(std::function<void()> action) {
+    void setOnClickAction(std::function<void()> action)
+    {
         onClick = action;
     }
 
-    void triggerClick() {
-        if (onClick) {
+    void triggerClick()
+    {
+        if (onClick)
+        {
             onClick();
         }
     }

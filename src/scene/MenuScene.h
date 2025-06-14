@@ -9,18 +9,18 @@
 #include <SFML/Audio.hpp>
 #include <vector>
 
-class MenuScene : public Scene {
+class MenuScene : public Scene
+{
 public:
-    explicit MenuScene(Game& game);
+    explicit MenuScene(Game &game);
     ~MenuScene() override;
 
     void loadAssets() override;
-    void handleInput(sf::Event& event, sf::RenderWindow& window) override;
+    void handleInput(sf::Event &event, sf::RenderWindow &window) override;
     void update(sf::Time deltaTime) override;
-    void render(sf::RenderWindow& window) override;
+    void render(sf::RenderWindow &window) override;
     void onVolumeChanged() override;
-    sf::Music* getMusic() override { return &m_menuMusic; }
-
+    sf::Music *getMusic() override { return &m_menuMusic; }
 
 private:
     void setupUI();
@@ -32,7 +32,7 @@ private:
 
     Button m_startButton;
     Button m_exitButton;
-    
+
     // Sidebar UI
     sf::RectangleShape m_sidebarBackground;
     sf::Text m_settingsTitle;
@@ -43,7 +43,7 @@ private:
     sf::Text m_collectionTitle;
     std::vector<Button> m_scrollButtons; // Buttons to view collected scrolls
     // ASSET_PATH: Example scroll_item.png for each collected scroll icon
-    sf::Texture m_scrollIconTexture; 
+    sf::Texture m_scrollIconTexture;
 
     sf::Music m_menuMusic;
 
@@ -52,7 +52,6 @@ private:
     sf::Text m_scrollDisplayContentText;
     sf::RectangleShape m_scrollDisplayBackground;
     Button m_closeScrollViewButton;
-
 };
 
 #endif // MENUSCENE_H

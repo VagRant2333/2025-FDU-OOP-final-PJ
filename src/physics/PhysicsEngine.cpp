@@ -1,20 +1,24 @@
 // src/physics/PhysicsEngine.cpp
 #include "PhysicsEngine.h"
 #include "../entities/Player.h" // For Player's properties like charge, velocity
-#include <cmath> // For std::sqrt, std::min/max if capping speed
-#include <iostream> // For debugging
+#include <cmath>                // For std::sqrt, std::min/max if capping speed
+#include <iostream>             // For debugging
 
 PhysicsEngine::PhysicsEngine() {}
 
-void PhysicsEngine::setPlayerMass(float mass) {
-    if (mass > 0) {
+void PhysicsEngine::setPlayerMass(float mass)
+{
+    if (mass > 0)
+    {
         m_playerMass = mass;
     }
 }
 
-void PhysicsEngine::updatePlayer(Player& player, sf::Time dt, const FieldProperties& fields, const sf::Vector2u& windowSize) {
-    std::cout << "update player./ PhysicsEngine.cpp" << std::endl;
-    if (m_playerMass <= 0) return; // Invalid mass
+void PhysicsEngine::updatePlayer(Player &player, sf::Time dt, const FieldProperties &fields, const sf::Vector2u &windowSize)
+{
+    // std::cout << "update player./ PhysicsEngine.cpp" << std::endl;
+    if (m_playerMass <= 0)
+        return; // Invalid mass
 
     float charge = player.getCharge();
     sf::Vector2f velocity = player.getVelocity();
@@ -30,24 +34,21 @@ void PhysicsEngine::updatePlayer(Player& player, sf::Time dt, const FieldPropert
     // v x B = (vy*Bz - 0, 0 - vx*Bz, 0) = (vy*Bz, -vx*Bz, 0)
     sf::Vector2f forceMagnetic = {
         charge * velocity.y * fields.magneticField_Z,
-        charge * -velocity.x * fields.magneticField_Z
-    };
+        charge * -velocity.x * fields.magneticField_Z};
 
     sf::Vector2f totalForce = forceElectric + forceMagnetic;
-    
+
     // Apply a damping/friction force proportional to velocity to prevent infinite speed gain
     // This is a simple way to make controls feel a bit more stable.
     // You can adjust DAMPING_FACTOR or remove if not desired.
-    const float DAMPING_FACTOR = 0.1f; 
+    const float DAMPING_FACTOR = 0.1f;
     // sf::Vector2f dampingForce = -velocity * DAMPING_FACTOR * m_playerMass; // Mass-dependent damping
     sf::Vector2f dampingForce(-velocity.x * DAMPING_FACTOR * m_playerMass, -velocity.y * DAMPING_FACTOR * m_playerMass);
     totalForce += dampingForce;
 
-
     // Acceleration: a = F/m
     // sf::Vector2f acceleration = totalForce / m_playerMass;
     sf::Vector2f acceleration(totalForce.x / m_playerMass, totalForce.y / m_playerMass);
-
 
     // Update velocity: v = v0 + a*t
     // sf::Vector2f newVelocity = velocity + acceleration * dt.asSeconds();
@@ -56,10 +57,11 @@ void PhysicsEngine::updatePlayer(Player& player, sf::Time dt, const FieldPropert
 
     // Speed cap
     float currentSpeed = std::sqrt(newVelocity.x * newVelocity.x + newVelocity.y * newVelocity.y);
-    if (currentSpeed > MAX_SPEED) {
+    if (currentSpeed > MAX_SPEED)
+    {
         newVelocity = (newVelocity / currentSpeed) * MAX_SPEED;
     }
-    
+
     player.setVelocity(newVelocity);
 
     // Update position: p = p0 + v*t (using new velocity for more stability)
@@ -67,7 +69,7 @@ void PhysicsEngine::updatePlayer(Player& player, sf::Time dt, const FieldPropert
 
     // Wall collision and bounce (simple implementation)
     sf::FloatRect playerBounds = player.getBounds(); // Assuming Player has getBounds()
-    float restitution = 0.6f; // Bounciness factor (0 to 1)
+    float restitution = 0.6f;                        // Bounciness factor (0 to 1)
 
     // get current pos for bounce
     sf::Vector2f currentPos = player.getPosition();
@@ -80,7 +82,8 @@ void PhysicsEngine::updatePlayer(Player& player, sf::Time dt, const FieldPropert
     //     player.setPosition(sf::Vector2f(playerBounds.width / 2.f, player.getPosition().y)); // Use constructor
     //     player.setVelocity(sf::Vector2f(-newVelocity.x * restitution, newVelocity.y));    // Use constructor
     // }
-    if (currentPos.x - playerBounds.width / 2.f < 0) {
+    if (currentPos.x - playerBounds.width / 2.f < 0)
+    {
         player.setPosition(sf::Vector2f(playerBounds.width / 2.0f, currentPos.y));
         player.setVelocity(sf::Vector2f(-currentVel.x * restitution, currentVel.y));
     }
@@ -92,26 +95,28 @@ void PhysicsEngine::updatePlayer(Player& player, sf::Time dt, const FieldPropert
     //     player.setPosition(sf::Vector2f(windowSize.x - playerBounds.width / 2.f, player.getPosition().y)); // Use constructor
     //     player.setVelocity(sf::Vector2f(-newVelocity.x * restitution, newVelocity.y)); // Use constructor
     // }
-     else if (currentPos.x + playerBounds.width / 2.f > windowSize.x) {
+    else if (currentPos.x + playerBounds.width / 2.f > windowSize.x)
+    {
         player.setPosition(sf::Vector2f(windowSize.x - playerBounds.width / 2.f, currentPos.y));
         player.setVelocity(sf::Vector2f(-currentVel.x * restitution, currentVel.y));
     }
 
     // Top wall
-    if (currentPos.y - playerBounds.height / 2.f < 0) {
+    if (currentPos.y - playerBounds.height / 2.f < 0)
+    {
         player.setPosition(sf::Vector2f(currentPos.x, playerBounds.height / 2.f));
         player.setVelocity(sf::Vector2f(currentVel.x, -currentVel.y * restitution));
     }
     // Bottom wall
-    else if (currentPos.y + playerBounds.height / 2.f > windowSize.y) {
+    else if (currentPos.y + playerBounds.height / 2.f > windowSize.y)
+    {
         player.setPosition(sf::Vector2f(currentPos.x, windowSize.y - playerBounds.height / 2.f));
         player.setVelocity(sf::Vector2f(currentVel.x, -currentVel.y * restitution));
         // Optional: If hitting bottom wall hard could still mean "death" or penalty
         // For now, just a bounce.
     }
-    
 
-    std::cout << "reseting speed./ PhysicsEngine.cpp" << std::endl;
+    // std::cout << "reseting speed./ PhysicsEngine.cpp" << std::endl;
 
     // Top/Bottom walls (optional, for now player can go off Y screen but bottom laser kills)
     // if (player.getPosition().y - playerBounds.height / 2.f < 0) {

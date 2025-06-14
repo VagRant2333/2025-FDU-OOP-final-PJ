@@ -2,7 +2,7 @@
 #include "MenuScene.h"
 #include "../render/ResourceManager.h"
 #include "../core/Game.h" // For GameState
-#include <iostream> // For cout
+#include <iostream>       // For cout
 
 // Define sensible defaults for UI layout
 const float SIDEBAR_WIDTH = 250.f;
@@ -10,39 +10,48 @@ const float PADDING = 10.f;
 const float BUTTON_HEIGHT = 50.f;
 const float BUTTON_WIDTH_MAIN = 200.f;
 
-
-MenuScene::MenuScene(Game& game)
+MenuScene::MenuScene(Game &game)
     : Scene(game),
       m_font(ResourceManager::getInstance().getDefaultFont()), // Get default font
       // Initialize buttons with placeholder values, will be set in setupUI
-      m_startButton("", m_font, 24, {0,0}, {0,0}),
-      m_exitButton("", m_font, 24, {0,0}, {0,0}),
-      m_volumeUpButton("+", m_font, 20, {0,0}, {30,30}),
-      m_volumeDownButton("-", m_font, 20, {0,0}, {30,30}),
-      m_closeScrollViewButton("Close", m_font, 20, {0,0}, {100,40})
-       {
+      m_startButton("", m_font, 24, {0, 0}, {0, 0}),
+      m_exitButton("", m_font, 24, {0, 0}, {0, 0}),
+      m_volumeUpButton("+", m_font, 20, {0, 0}, {30, 30}),
+      m_volumeDownButton("-", m_font, 20, {0, 0}, {30, 30}),
+      m_closeScrollViewButton("Close", m_font, 20, {0, 0}, {100, 40})
+{
     std::cout << "MenuScene created." << std::endl;
     // loadAssets() will be called by Game when scene is set
 }
 
-MenuScene::~MenuScene() {
-    if (m_menuMusic.getStatus() == sf::Music::Playing) {
+MenuScene::~MenuScene()
+{
+    if (m_menuMusic.getStatus() == sf::Music::Playing)
+    {
         m_menuMusic.stop();
     }
     std::cout << "MenuScene destroyed." << std::endl;
 }
 
-void MenuScene::loadAssets() {
+void MenuScene::loadAssets()
+{
     std::cout << "MenuScene loading assets." << std::endl;
-    try {
+    try
+    {
         // Background
-        sf::Texture& bgTex = ResourceManager::getInstance().loadTexture("menu_bg", "../../assets/images/menu_bg.png"); // ASSET_PATH
+        sf::Texture &bgTex = ResourceManager::getInstance().loadTexture("menu_bg", "../../assets/images/menu_bg.png"); // ASSET_PATH
         m_backgroundSprite.setTexture(bgTex);
-        // Scale background to fit window if necessary (example)
-        float bgScaleX = static_cast<float>(m_game.getWindow().getSize().x) / bgTex.getSize().x;
-        float bgScaleY = static_cast<float>(m_game.getWindow().getSize().y) / bgTex.getSize().y;
-        m_backgroundSprite.setScale(bgScaleX, bgScaleY);
 
+        // Scale background to fit window if necessary (example)
+        // float bgScaleX = static_cast<float>(m_game.getWindow().getSize().x) / bgTex.getSize().x;
+        // float bgScaleY = static_cast<float>(m_game.getWindow().getSize().y) / bgTex.getSize().y;
+        // m_backgroundSprite.setScale(bgScaleX, bgScaleY);
+        sf::Vector2u windowSize = m_game.getWindow().getSize();
+        sf::Vector2u textureSize = bgTex.getSize();
+        float scaleX = (float)windowSize.x / textureSize.x;
+        float scaleY = (float)windowSize.y / textureSize.y;
+        float scale = std::max(scaleX, scaleY);
+        m_backgroundSprite.setScale(scale, scale);
 
         // Game Title
         m_gameTitleText.setFont(m_font);
@@ -56,10 +65,10 @@ void MenuScene::loadAssets() {
         float titleX = (m_game.getWindow().getSize().x + SIDEBAR_WIDTH) / 2.0f; // Center in the area right of sidebar
         m_gameTitleText.setPosition(titleX, m_game.getWindow().getSize().y * 0.2f);
 
-
         // Music
         // ASSET_PATH
-        if (!m_menuMusic.openFromFile("../../assets/audio/menu_theme.ogg")) {
+        if (!m_menuMusic.openFromFile("../../assets/audio/menu_theme.ogg"))
+        {
             throw std::runtime_error("Failed to load menu_theme.ogg");
         }
         m_menuMusic.setLoop(true);
@@ -69,9 +78,9 @@ void MenuScene::loadAssets() {
         // Scroll icon for collection
         // ASSET_PATH
         m_scrollIconTexture = ResourceManager::getInstance().loadTexture("scroll_item_icon", "../../assets/images/scroll_item.png");
-
-
-    } catch (const std::runtime_error& e) {
+    }
+    catch (const std::runtime_error &e)
+    {
         std::cerr << "Error loading assets in MenuScene: " << e.what() << std::endl;
         // Handle error, maybe switch to a fallback or show error message
     }
@@ -79,27 +88,27 @@ void MenuScene::loadAssets() {
     std::cout << "MenuScene assets loaded." << std::endl;
 }
 
-
-void MenuScene::setupUI() {
+void MenuScene::setupUI()
+{
     sf::Vector2u windowSize = m_game.getWindow().getSize();
 
     // Main Buttons (Start, Exit) - Centered below title
     float buttonYStart = m_gameTitleText.getPosition().y + m_gameTitleText.getLocalBounds().height * 2.0f;
     float mainButtonX = (windowSize.x + SIDEBAR_WIDTH) / 2.0f - BUTTON_WIDTH_MAIN / 2.0f;
 
-    m_startButton = Button("Start Game", m_font, 30, 
-                            {mainButtonX, buttonYStart}, 
-                            {BUTTON_WIDTH_MAIN, BUTTON_HEIGHT}, sf::Color(0,150,0));
-    m_startButton.setOnClickAction([this]() {
-        m_game.changeScene(GameState::Playing);
-    });
+    m_startButton = Button("Start Game", m_font, 30,
+                           {mainButtonX, buttonYStart},
+                           {BUTTON_WIDTH_MAIN, BUTTON_HEIGHT}, sf::Color(0, 150, 0));
+    m_startButton.setOnClickAction([this]()
+                                   { m_game.changeScene(GameState::Playing); });
 
-    m_exitButton = Button("Exit Game", m_font, 30, 
-                           {mainButtonX, buttonYStart + BUTTON_HEIGHT + PADDING * 2.f}, 
-                           {BUTTON_WIDTH_MAIN, BUTTON_HEIGHT}, sf::Color(150,0,0));
-    m_exitButton.setOnClickAction([this]() {
-        m_game.m_exitGame = true; // Or m_game.getWindow().close();
-    });
+    m_exitButton = Button("Exit Game", m_font, 30,
+                          {mainButtonX, buttonYStart + BUTTON_HEIGHT + PADDING * 2.f},
+                          {BUTTON_WIDTH_MAIN, BUTTON_HEIGHT}, sf::Color(150, 0, 0));
+    m_exitButton.setOnClickAction([this]()
+                                  {
+                                      m_game.m_exitGame = true; // Or m_game.getWindow().close();
+                                  });
 
     // Sidebar
     m_sidebarBackground.setSize(sf::Vector2f(SIDEBAR_WIDTH, static_cast<float>(windowSize.y)));
@@ -116,24 +125,26 @@ void MenuScene::setupUI() {
     // Volume Controls
     float currentY = m_settingsTitle.getPosition().y + m_settingsTitle.getLocalBounds().height + PADDING * 2.f;
     m_volumeDownButton = Button("-", m_font, 24, {PADDING, currentY}, {40.f, 40.f});
-    m_volumeDownButton.setOnClickAction([this]() {
-        m_game.setMasterVolume(m_game.getMasterVolume() - 10.f);
-        onVolumeChanged(); // Update text display
-    });
+    m_volumeDownButton.setOnClickAction([this]()
+                                        {
+                                            m_game.setMasterVolume(m_game.getMasterVolume() - 10.f);
+                                            onVolumeChanged(); // Update text display
+                                        });
 
     m_volumeValueText.setFont(m_font);
     m_volumeValueText.setCharacterSize(24);
     m_volumeValueText.setFillColor(sf::Color::White);
     // Positioned between buttons, updated in onVolumeChanged
-    m_volumeValueText.setPosition(PADDING + 40.f + PADDING, currentY + 5.f); 
+    m_volumeValueText.setPosition(PADDING + 40.f + PADDING, currentY + 5.f);
     onVolumeChanged(); // Initial text update
 
     m_volumeUpButton = Button("+", m_font, 24, {PADDING + 40.f + PADDING + 60.f + PADDING, currentY}, {40.f, 40.f});
-    m_volumeUpButton.setOnClickAction([this]() {
-        m_game.setMasterVolume(m_game.getMasterVolume() + 10.f);
-        onVolumeChanged(); // Update text display
-    });
-    
+    m_volumeUpButton.setOnClickAction([this]()
+                                      {
+                                          m_game.setMasterVolume(m_game.getMasterVolume() + 10.f);
+                                          onVolumeChanged(); // Update text display
+                                      });
+
     currentY += 40.f + PADDING * 3.f;
 
     // Collection Title
@@ -149,15 +160,17 @@ void MenuScene::setupUI() {
     float scrollIconSize = 48.f; // Assuming square icons
     float scrollIconSpacing = PADDING;
     int iconsPerRow = static_cast<int>((SIDEBAR_WIDTH - 2 * PADDING) / (scrollIconSize + scrollIconSpacing));
-    
-    for (int i = 0; i < m_game.getTotalScrolls(); ++i) {
-        if (m_game.isScrollCollected(i)) {
+
+    for (int i = 0; i < m_game.getTotalScrolls(); ++i)
+    {
+        if (m_game.isScrollCollected(i))
+        {
             // ASSET_PATH for scroll icon is already loaded into m_scrollIconTexture
-            Button scrollButton(m_scrollIconTexture, {0,0}); // Position set below
-            scrollButton.sprite.setTextureRect(sf::IntRect(0,0, m_scrollIconTexture.getSize().x, m_scrollIconTexture.getSize().y)); // Use full texture
-            scrollButton.sprite.setScale(scrollIconSize / m_scrollIconTexture.getSize().x, 
+            Button scrollButton(m_scrollIconTexture, {0, 0});                                                                        // Position set below
+            scrollButton.sprite.setTextureRect(sf::IntRect(0, 0, m_scrollIconTexture.getSize().x, m_scrollIconTexture.getSize().y)); // Use full texture
+            scrollButton.sprite.setScale(scrollIconSize / m_scrollIconTexture.getSize().x,
                                          scrollIconSize / m_scrollIconTexture.getSize().y);
-            
+
             float posX = PADDING + (i % iconsPerRow) * (scrollIconSize + scrollIconSpacing);
             float posY = currentY + (i / iconsPerRow) * (scrollIconSize + scrollIconSpacing);
             scrollButton.sprite.setPosition(posX, posY);
@@ -165,23 +178,22 @@ void MenuScene::setupUI() {
             scrollButton.shape.setPosition(posX, posY);
             scrollButton.shape.setSize({scrollIconSize, scrollIconSize});
 
-
             // Unique action for each scroll button
             // Need to capture 'i' by value for the lambda
-            scrollButton.setOnClickAction([this, scrollId = i]() { 
-                displayScrollContent(scrollId);
-            });
+            scrollButton.setOnClickAction([this, scrollId = i]()
+                                          { displayScrollContent(scrollId); });
             m_scrollButtons.push_back(scrollButton);
-        } else {
+        }
+        else
+        {
             // Optionally, display a placeholder for uncollected scrolls (e.g., a greyed-out icon)
             // For now, only show collected ones.
         }
     }
 
-
     // Scroll View UI (initially hidden)
     m_scrollDisplayBackground.setSize(sf::Vector2f(windowSize.x * 0.6f, windowSize.y * 0.7f));
-    m_scrollDisplayBackground.setFillColor(sf::Color(30,30,70,220));
+    m_scrollDisplayBackground.setFillColor(sf::Color(30, 30, 70, 220));
     m_scrollDisplayBackground.setOutlineColor(sf::Color::Cyan);
     m_scrollDisplayBackground.setOutlineThickness(2.f);
     m_scrollDisplayBackground.setPosition(windowSize.x * 0.2f, windowSize.y * 0.15f);
@@ -191,54 +203,72 @@ void MenuScene::setupUI() {
     m_scrollDisplayContentText.setFillColor(sf::Color::White);
     m_scrollDisplayContentText.setPosition(m_scrollDisplayBackground.getPosition().x + PADDING,
                                            m_scrollDisplayBackground.getPosition().y + PADDING);
-    
+
     m_closeScrollViewButton = Button("Close", m_font, 22,
                                      {m_scrollDisplayBackground.getPosition().x + m_scrollDisplayBackground.getSize().x / 2.f - 50.f,
                                       m_scrollDisplayBackground.getPosition().y + m_scrollDisplayBackground.getSize().y - BUTTON_HEIGHT - PADDING},
                                      {100.f, BUTTON_HEIGHT});
-    m_closeScrollViewButton.setOnClickAction([this](){ m_isViewingScroll = false; });
-
+    m_closeScrollViewButton.setOnClickAction([this]()
+                                             { m_isViewingScroll = false; });
 }
 
-
-void MenuScene::displayScrollContent(int scrollId) {
+void MenuScene::displayScrollContent(int scrollId)
+{
     m_scrollDisplayContentText.setString(m_game.getScrollContent(scrollId));
     // Optional: Adjust text position or add scrolling if content is too long
     // For simplicity, assume it fits or truncates.
     m_isViewingScroll = true;
 }
 
-
-void MenuScene::handleInput(sf::Event& event, sf::RenderWindow& window) {
-    if (m_isViewingScroll) {
-        if (event.type == sf::Event::MouseButtonPressed) {
-            if (event.mouseButton.button == sf::Mouse::Left) {
-                if (m_closeScrollViewButton.isMouseOver(window)) {
+void MenuScene::handleInput(sf::Event &event, sf::RenderWindow &window)
+{
+    if (m_isViewingScroll)
+    {
+        if (event.type == sf::Event::MouseButtonPressed)
+        {
+            if (event.mouseButton.button == sf::Mouse::Left)
+            {
+                if (m_closeScrollViewButton.isMouseOver(window))
+                {
                     m_closeScrollViewButton.triggerClick();
                 }
             }
         }
-         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+        {
             m_isViewingScroll = false;
         }
         return; // Don't process other inputs when viewing scroll
     }
 
-    if (event.type == sf::Event::MouseButtonPressed) {
-        if (event.mouseButton.button == sf::Mouse::Left) {
-            if (m_startButton.isMouseOver(window)) {
+    if (event.type == sf::Event::MouseButtonPressed)
+    {
+        if (event.mouseButton.button == sf::Mouse::Left)
+        {
+            if (m_startButton.isMouseOver(window))
+            {
                 m_startButton.triggerClick();
-            } else if (m_exitButton.isMouseOver(window)) {
+            }
+            else if (m_exitButton.isMouseOver(window))
+            {
                 m_exitButton.triggerClick();
-            } else if (m_volumeUpButton.isMouseOver(window)) {
+            }
+            else if (m_volumeUpButton.isMouseOver(window))
+            {
                 m_volumeUpButton.triggerClick();
-            } else if (m_volumeDownButton.isMouseOver(window)) {
+            }
+            else if (m_volumeDownButton.isMouseOver(window))
+            {
                 m_volumeDownButton.triggerClick();
-            } else {
-                for (auto& scrollBtn : m_scrollButtons) {
-                    if (scrollBtn.isMouseOver(window)) {
+            }
+            else
+            {
+                for (auto &scrollBtn : m_scrollButtons)
+                {
+                    if (scrollBtn.isMouseOver(window))
+                    {
                         scrollBtn.triggerClick();
-                        break; 
+                        break;
                     }
                 }
             }
@@ -246,12 +276,14 @@ void MenuScene::handleInput(sf::Event& event, sf::RenderWindow& window) {
     }
 }
 
-void MenuScene::update(sf::Time deltaTime) {
+void MenuScene::update(sf::Time deltaTime)
+{
     // Can add hover effects for buttons here if desired
 }
 
-void MenuScene::render(sf::RenderWindow& window) {
-    window.clear(sf::Color(30,30,30)); // A default dark background
+void MenuScene::render(sf::RenderWindow &window)
+{
+    window.clear(sf::Color(30, 30, 30)); // A default dark background
     window.draw(m_backgroundSprite);
     window.draw(m_gameTitleText);
 
@@ -264,29 +296,33 @@ void MenuScene::render(sf::RenderWindow& window) {
     m_volumeUpButton.draw(window);
     m_volumeDownButton.draw(window);
     window.draw(m_volumeValueText);
-    
+
     window.draw(m_collectionTitle);
-    for (auto& scrollBtn : m_scrollButtons) {
+    for (auto &scrollBtn : m_scrollButtons)
+    {
         scrollBtn.draw(window);
     }
 
     // Draw Scroll View if active
-    if (m_isViewingScroll) {
+    if (m_isViewingScroll)
+    {
         window.draw(m_scrollDisplayBackground);
         window.draw(m_scrollDisplayContentText);
         m_closeScrollViewButton.draw(window);
     }
 }
 
-void MenuScene::onVolumeChanged() {
-    if (m_menuMusic.getStatus() == sf::Music::Playing || m_menuMusic.getStatus() == sf::Music::Paused) {
-         m_menuMusic.setVolume(m_game.getMasterVolume());
+void MenuScene::onVolumeChanged()
+{
+    if (m_menuMusic.getStatus() == sf::Music::Playing || m_menuMusic.getStatus() == sf::Music::Paused)
+    {
+        m_menuMusic.setVolume(m_game.getMasterVolume());
     }
     m_volumeValueText.setString(std::to_string(static_cast<int>(m_game.getMasterVolume())));
     // Recenter volume text if its length changes significantly
     sf::FloatRect textRect = m_volumeValueText.getLocalBounds();
-     m_volumeValueText.setOrigin(textRect.left + textRect.width / 2.0f,
-                               textRect.top + textRect.height / 2.0f);
+    m_volumeValueText.setOrigin(textRect.left + textRect.width / 2.0f,
+                                textRect.top + textRect.height / 2.0f);
     m_volumeValueText.setPosition(m_volumeDownButton.shape.getPosition().x + m_volumeDownButton.shape.getSize().x + PADDING + 30.f, // 30 is approx half width of text field
                                   m_volumeDownButton.shape.getPosition().y + m_volumeDownButton.shape.getSize().y / 2.f);
 }
