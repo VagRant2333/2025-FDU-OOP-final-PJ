@@ -28,11 +28,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_executable(DenPaKid
     src/main.cpp
     src/core/Game.cpp
-    src/entities/Entity.cpp
     src/entities/Player.cpp
     src/scene/GameScene.cpp
     src/scene/MenuScene.cpp
-    src/ui/UIManager.cpp
     src/physics/PhysicsEngine.cpp
 )
 

@@ -2,8 +2,8 @@
 #include "Game.h"
 #include "../scene/MenuScene.h"
 #include "../scene/GameScene.h"
-#include "../render/ResourceManager.h" // For default font
-#include <iostream>                    // For std::cout, std::cerr
+#include "../render/ResourceManager.h"
+#include <iostream>
 
 Game::Game(unsigned int width, unsigned int height, const std::string &title)
     : m_window(sf::VideoMode(width, height), title),
@@ -12,10 +12,7 @@ Game::Game(unsigned int width, unsigned int height, const std::string &title)
 {
     std::cout << "initiating Game./ Game.cpp" << std::endl;
     m_window.setVerticalSyncEnabled(true);
-    // m_window.setFramerateLimit(60); // Optional
 
-    // Initialize scroll contents (placeholders)
-    // YOU NEED TO FILL THESE IN
     m_scrollContents.resize(m_totalScrolls);
 
     m_scrollContents[0] = "...core resonance frequency spiking... can't contain the feedback loop! \n They called it clean energy... fools.\n The Grid wasn't just powered by RET... it was RET. When it went critical... \n... not an explosion... a unraveling. Reality flickered.\n Now the energy's... alive. Angry. We built a god... and it hates its cage. \nnPray your insulation holds... or that you change enough to dance with the lightning";
@@ -26,8 +23,7 @@ Game::Game(unsigned int width, unsigned int height, const std::string &title)
 
     try
     {
-        m_font = ResourceManager::getInstance().getDefaultFont(); // Load default font for Game class messages
-        // std::cout << "loading default font./ Game.cpp" << std::endl;
+        m_font = ResourceManager::getInstance().getDefaultFont();
         m_winText.setFont(m_font);
         m_winText.setCharacterSize(20);
         m_winText.setFillColor(sf::Color::White);
@@ -39,12 +35,10 @@ Game::Game(unsigned int width, unsigned int height, const std::string &title)
         m_deathScrollText.setFont(m_font);
         m_deathScrollText.setCharacterSize(24);
         m_deathScrollText.setFillColor(sf::Color::White);
-        // Position will be set when displaying
     }
     catch (const std::runtime_error &e)
     {
         std::cerr << "Error initializing Game: " << e.what() << std::endl;
-        // Game might not be able to display text messages if font fails
     }
 
     changeScene(GameState::MainMenu);
@@ -52,7 +46,6 @@ Game::Game(unsigned int width, unsigned int height, const std::string &title)
 
 Game::~Game()
 {
-    // Smart pointers handle scene deletion
 }
 
 void Game::run()
@@ -82,14 +75,8 @@ void Game::processEvents()
         }
         if (m_currentState == GameState::GameWon && event.type == sf::Event::KeyPressed)
         {
-            m_exitGame = true; // Or return to menu
+            m_exitGame = true;
         }
-        // if (m_currentState == GameState::GameOver && lastCollectedScrollId != -1 && event.type == sf::Event::KeyPressed) {
-        //     lastCollectedScrollId = -1; // Acknowledge scroll view
-        //     changeScene(GameState::MainMenu); // Return to menu after viewing scroll
-        // } else if (m_currentState == GameState::GameOver && lastCollectedScrollId == -1 && event.type == sf::Event::KeyPressed) {
-        //     changeScene(GameState::MainMenu); // Return to menu if no scroll to view
-        // }
         if (m_currentState == GameState::GameOver && event.type == sf::Event::KeyPressed)
         {
             if (!m_newlyCollectedScrolls.empty())
@@ -123,7 +110,7 @@ void Game::update(sf::Time deltaTime)
 
 void Game::render()
 {
-    m_window.clear(sf::Color::Black); // Default clear color
+    m_window.clear(sf::Color::Black);
     if (m_currentScene && (m_currentState != GameState::GameWon && m_currentState != GameState::GameOver))
     {
         m_currentScene->render(m_window);
@@ -142,7 +129,7 @@ void Game::render()
 void Game::changeScene(GameState newState)
 {
     m_currentState = newState;
-    // lastCollectedScrollId = -1; // Reset last collected scroll on scene change
+    // Reset last collected scroll on scene change
     m_gameWonMessageDisplayed = false;
 
     std::cout << "Changing scene to: " << static_cast<int>(newState) << std::endl;
@@ -162,15 +149,13 @@ void Game::changeScene(GameState newState)
     }
     else if (m_currentState == GameState::GameOver)
     {
-        // No new scene, just stops updates on GameScene and Game loop handles message/return
-        // If a scroll was just collected and led to death, prepare its display
-        // This logic is a bit intertwined; playerDied might set a flag or the scroll ID
+        // stop updates on gamescene and game loop handles message/return
+        // If a scroll was just collected and then death, prepare display
     }
     else if (m_currentState == GameState::GameWon)
     {
         // No new scene, Game loop handles win message
     }
-    // Ensure the new scene's assets are loaded if not pre-loaded
     if (m_currentScene)
     {
         m_currentScene->loadAssets();
@@ -180,7 +165,7 @@ void Game::changeScene(GameState newState)
 void Game::setMasterVolume(float volume)
 {
     m_masterVolume = std::max(0.0f, std::min(100.0f, volume));
-    // Scenes will need to query this and set their own music/sound volumes
+    // scenes will need to query this
     if (m_currentScene)
     {
         m_currentScene->onVolumeChanged();
@@ -195,7 +180,6 @@ void Game::collectScroll(int scrollId)
         if (!m_collectedScrolls[scrollId])
         {
             m_collectedScrolls[scrollId] = true;
-            // lastCollectedScrollId = scrollId; // Remember this for display if player dies soon
             m_newlyCollectedScrolls.push_back(scrollId);
             std::cout << "Collected scroll: " << scrollId << std::endl;
         }
@@ -262,8 +246,6 @@ void Game::playerDied(float distance)
 {
     std::cout << "Player died. Distance: " << distance << std::endl;
     m_currentState = GameState::GameOver;
-    // If a scroll was collected *just now* (lastCollectedScrollId is set)
-    // prepare to display it.
     if (!m_newlyCollectedScrolls.empty())
     {
         // std::cout << "died, preparing to show scroll./ Game.cpp" << std::endl;
@@ -280,7 +262,6 @@ void Game::playerDied(float distance)
         m_deathScrollText.setOrigin(bounds.width / 2.0f, bounds.height / 2.0f);
         m_deathScrollText.setPosition(m_window.getSize().x / 2.0f, m_window.getSize().y / 2.0f);
     }
-    // The game loop's event processing will handle returning to menu on key press
 }
 
 void Game::checkWinCondition(float distance)
@@ -293,7 +274,7 @@ void Game::checkWinCondition(float distance)
             m_currentState = GameState::GameWon;
             m_gameWonMessageDisplayed = true;
             if (m_currentScene && m_currentScene->getMusic())
-            { // Stop game music
+            { // stop game music
                 m_currentScene->getMusic()->stop();
             }
         }

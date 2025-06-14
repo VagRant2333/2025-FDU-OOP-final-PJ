@@ -7,9 +7,8 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include "../scene/Scene.h" // Forward declare if Scene.h includes Game.h, but here it's fine
+#include "../scene/Scene.h"
 
-// Forward declarations
 namespace sf
 {
     class RenderWindow;
@@ -22,8 +21,8 @@ enum class GameState
 {
     MainMenu,
     Playing,
-    GameOver,      // Potentially for showing score/scroll before returning to menu
-    ViewingScroll, // When clicking a scroll in the collection
+    GameOver,      // for show score/scroll before returning to menu
+    ViewingScroll, // When clicking a scroll
     GameWon
 };
 
@@ -39,11 +38,11 @@ public:
     void changeScene(GameState newState);
 
     float getMasterVolume() const { return m_masterVolume; }
-    void setMasterVolume(float volume); // Volume 0.0 to 100.0
+    void setMasterVolume(float volume); // volume 0.0 to 100.0
 
     GameState getCurrentState() const { return m_currentState; }
 
-    // Scroll management
+    // scroll management
     void collectScroll(int scrollId);
     bool isScrollCollected(int scrollId) const;
     const std::vector<bool> &getCollectedScrollsStatus() const { return m_collectedScrolls; }
@@ -54,38 +53,35 @@ public:
     void playerDied(float distance);
     void checkWinCondition(float distance);
 
-    // For displaying scroll after death/win
-    // int lastCollectedScrollId = -1;
-
 private:
     void processEvents();
     void update(sf::Time deltaTime);
     void render();
-    void loadAssets(); // Central place to load common assets or trigger scene asset loading
+    void loadAssets(); // load common assets or trigger scene asset loading
 
     sf::RenderWindow m_window;
     std::unique_ptr<Scene> m_currentScene;
     GameState m_currentState;
 
-    float m_masterVolume = 50.0f; // Default volume 0-100
+    float m_masterVolume = 50.0f; // default vol
 
-    // Scroll data
-    const int m_totalScrolls = 5; // Example: 5 scrolls in the game
+    // scroll data
+    const int m_totalScrolls = 5;
     std::vector<bool> m_collectedScrolls;
-    std::vector<std::string> m_scrollContents; // Placeholder for scroll texts
+    std::vector<std::string> m_scrollContents; // holder for scroll texts
     void prepareNextScrollForDisplay();
 
-    // Game win condition
-    const float m_requiredDistanceForWin = 100.0f; // Example distance
+    // win condition
+    const float m_requiredDistanceForWin = 100.0f;
     bool m_gameWonMessageDisplayed = false;
 
     sf::Text m_winText;
     sf::Text m_deathScrollText;
-    sf::Font m_font; // For game-over/win messages displayed by Game class itself
+    sf::Font m_font; // win message displayed by game class
 
     std::vector<int> m_newlyCollectedScrolls;
 
-public: // Public for easy access from scenes, or use getters
+public:
     bool m_exitGame = false;
 };
 

@@ -16,7 +16,7 @@ public:
     virtual sf::Vector2f getPosition() const = 0;
     virtual void setPosition(const sf::Vector2f &pos) = 0;
 
-    bool isActive = true; // For simple removal (e.g. lasers off-screen)
+    bool isActive = true; // for simple removal
 };
 
 #endif // ENTITY_H

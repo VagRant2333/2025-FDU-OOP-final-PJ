@@ -10,7 +10,7 @@ class Player : public Entity
 public:
     Player(sf::Vector2f startPosition, sf::Texture &texture);
 
-    void update(sf::Time deltaTime) override; // Mostly for internal logic if any, physics engine moves it
+    void update(sf::Time deltaTime) override; // for internal logic ,physics engine moves it
     void render(sf::RenderWindow &window) override;
 
     sf::FloatRect getBounds() const override;
@@ -20,9 +20,9 @@ public:
     void setVelocity(const sf::Vector2f &vel);
     sf::Vector2f getVelocity() const;
 
-    // Charge controls
+    // charge controls
     void increaseCharge();
-    void decreaseCharge(); // amount is now internal via CHARGE_STEP
+    void decreaseCharge();
     void toggleChargeSign();
     float getCharge() const;
     void setCharge(float charge);
@@ -35,10 +35,10 @@ public:
 private:
     sf::Sprite m_sprite;
     sf::Vector2f m_velocity;
-    float m_charge; // Player's electric charge (e.g., in Coulombs or arbitrary units)
+    float m_charge; // electric charge
 
     static constexpr float MAX_CHARGE = 30.0f;
-    static constexpr float MIN_CHARGE_MAGNITUDE = 0.1f; // Minimum magnitude, can be negative
+    static constexpr float MIN_CHARGE_MAGNITUDE = 0.1f; // min magnitude, can be negative
     static constexpr float CHARGE_STEP = 5.f;
 
     int m_dashCharges;

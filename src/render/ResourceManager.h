@@ -6,8 +6,8 @@
 #include <SFML/Audio.hpp>
 #include <string>
 #include <map>
-#include <stdexcept> // Required for std::runtime_error
-#include <iostream>  // Required for std::cerr
+#include <stdexcept>
+#include <iostream>
 
 class ResourceManager
 {
@@ -31,7 +31,7 @@ public:
             {
                 throw std::runtime_error("Failed to load texture: " + filepath);
             }
-            m_textures[id] = texture; // This copies the texture
+            m_textures[id] = texture;
             // std::cout << "Loaded texture: " << filepath << " as " << id << std::endl;
         }
         return m_textures.at(id);
@@ -45,20 +45,8 @@ public:
             sf::Font font;
             if (!font.loadFromFile(filepath))
             {
-                // Since we're using default font if this fails, we can make a default font.
-                // For now, let's throw an error or log.
-                // A truly robust default would involve embedding a font or using a known system font.
-                // The user requested default font, so we can skip custom font loading if it's problematic.
-                // However, SFML Text needs a font. We'll try to load one, if not, text won't show.
-                // For "default font", SFML doesn't have one built-in that works out-of-the-box for sf::Text without loadFromFile.
-                // Let's assume a simple "arial.ttf" should be provided for basic text.
+
                 std::cerr << "Warning: Failed to load font: " + filepath + ". Text might not display." << std::endl;
-                // Create a placeholder font or handle error appropriately
-                // For now, if font loading fails, using it will be problematic.
-                // A simple fallback is to not display text or use a very basic shape.
-                // The requirement "directly in the UI display default fonts" is tricky with SFML.
-                // We MUST load a font file. I'll add a default font asset.
-                // ASSET_PATH: Create a font file, e.g., assets/fonts/arial.ttf
                 if (!m_defaultFont.loadFromFile("../../assets/fonts/Twinster.ttf"))
                 { // Placeholder path
                     throw std::runtime_error("Failed to load default font: assets/fonts/Twinster.ttf");
@@ -73,8 +61,6 @@ public:
         }
         return m_fonts.at(id);
     }
-
-    // Use this for default font if no path is given, assuming "assets/fonts/Twinster.ttf" exists
     sf::Font &getDefaultFont()
     {
         if (m_fonts.find("default") == m_fonts.end())
@@ -84,7 +70,6 @@ public:
                 throw std::runtime_error("FATAL: Could not load default font: assets/fonts/Twinster.ttf. Please ensure this file exists.");
             }
             m_fonts["default"] = m_defaultFont;
-            // std::cout << "Loaded default font as 'default'" << std::endl;
         }
         return m_fonts.at("default");
     }
@@ -106,11 +91,11 @@ public:
     }
 
 private:
-    ResourceManager() = default; // Private constructor for Singleton
+    ResourceManager() = default; // constructor
     std::map<std::string, sf::Texture> m_textures;
     std::map<std::string, sf::Font> m_fonts;
     std::map<std::string, sf::SoundBuffer> m_soundBuffers;
-    sf::Font m_defaultFont; // Fallback font
+    sf::Font m_defaultFont;
 };
 
 #endif // RESOURCEMANAGER_H
