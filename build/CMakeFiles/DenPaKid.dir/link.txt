@@ -1,3 +1,0 @@
-D:\mingw\mingw64\bin\cmake.exe -E rm -f CMakeFiles\DenPaKid.dir/objects.a
-D:\mingw\mingw64\bin\ar.exe qc CMakeFiles\DenPaKid.dir/objects.a @CMakeFiles\DenPaKid.dir\objects1.rsp
-D:\mingw\mingw64\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\DenPaKid.dir/objects.a -Wl,--no-whole-archive -o bin\DenPaKid.exe -Wl,--out-implib,libDenPaKid.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\DenPaKid.dir\linkLibs.rsp

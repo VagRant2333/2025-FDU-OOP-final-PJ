@@ -2,6 +2,6 @@
 .DS_Store
 build/
 CMakeFiles/
-CMakeCaChe.txt
-bulid.ninja
+CMakeCache.txt
+build.ninja
 cmake_install.cmake
